@@ -37,7 +37,7 @@ for header, body in matches:
                 "full_ghazal": f"{header}\n{full_ghazal}"
             })
 
-# Create embeddings for complete بيتs
+# Create embeddings for complete beits
 model = SentenceTransformer('heydariAI/persian-embeddings')
 beyt_texts = [v["verse_text"] for v in verse_data]
 embeddings = model.encode(beyt_texts)
@@ -46,7 +46,7 @@ embeddings = model.encode(beyt_texts)
 db = lancedb.connect("lancedb_dir")
 db.drop_all_tables()
 
-# Create schema (same structure)
+# Create schema 
 schema = pa.schema([
     pa.field("verse_id", pa.string()),
     pa.field("verse_text", pa.string()),

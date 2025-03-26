@@ -4,7 +4,7 @@ import lancedb
 import numpy as np
 import pandas as pd
 
-# Must be first command
+# Must be first command, just for it to be centered
 st.set_page_config(
     page_title="جستجوی ابیات حافظ",
     page_icon=":book:",
