@@ -15,7 +15,7 @@ def search(embedding: list):
     print(table.count_rows())
     # Perform vector-based search       
     results = table.search(embedding, vector_column_name="embedding") \
-                   .select(["id", "document"]) \
+                   .select(["verse_text", "ghazal_id"]) \
                    .to_pandas()
 
     return results
