@@ -12,13 +12,21 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Custom CSS with colors and RTL support
+# Custom CSS with Vazirmatn font, colors and RTL support
+# Option 1: Local font file
+# Make sure the font file is placed in a folder that Streamlit serves (e.g. ./assets)
 st.markdown("""
 <style>
+    @font-face {
+        font-family: 'Vazirmatn';
+        src: url('https://cdnjs.cloudflare.com/ajax/libs/vazir-font/30.0.0/Vazir-Black.ttf') format('ttf');
+        font-weight: normal;
+        font-style: normal;
+    }
     body, html, [class*="css"] {
         direction: rtl;
         text-align: right;
-        font-family: 'B Nazanin', Tahoma, sans-serif;
+        font-family: 'Vazirmatn', 'B Nazanin', Tahoma, sans-serif;
     }
     .stTextArea textarea {
         background-color:  #584B40;
@@ -55,6 +63,11 @@ st.markdown("""
         color: #d97706;
         font-size: 1.2rem;
     }
+    .score {
+        font-size: 0.9rem;
+        color: #4b5563;
+        margin-top: 0.5rem;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -74,8 +87,9 @@ db = init_db()
 def search_verses(embedding: np.ndarray, top_k=3):
     try:
         table = db.open_table("ghazals")
+        # Include 'score' in the select so we can display the relevancy
         results = table.search(embedding.tolist()) \
-                     .select(["verse_text", "ghazal_id"]) \
+                     .select(["verse_text", "ghazal_id", "_distance"]) \
                      .limit(top_k) \
                      .to_pandas()
         return results
@@ -108,6 +122,7 @@ if st.button("🔍 انجام جستجو"):
                         <p style="font-size: 1.2rem; line-height: 2; color: #1e3a8a;">
                             {row['verse_text']}
                         </p>
+                        <div class="score">امتیاز شباهت: {row['_distance']:.4f}</div>
                     </div>
                     """, unsafe_allow_html=True)
             else:
@@ -125,8 +140,9 @@ st.sidebar.markdown("""
     <p style="color: #1e3a8a;">
         • جستجوی معنایی در دیوان حافظ<br>
         • استفاده از هوش مصنوعی برای درک متن<br>
-        • نمایش نتایج مرتبط با سبک مدرن<br>
-        • پشتیبانی کامل از زبان فارسی
+        • نمایش نتایج مرتبط با نمایش امتیاز شباهت (relevancy score)<br>
+        • پشتیبانی کامل از زبان فارسی<br>
+        • استفاده از فونت Vazirmatn برای خوانایی بهتر
     </p>
 </div>
 """, unsafe_allow_html=True)

@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  hafez-search:
+    image: hafez-search
+    ports:
+      - "7777:7777"
+    volumes:
+      - ./:/app  # Mount current directory to /app in the container
+    environment:
+      - STREAMLIT_SERVER_PORT=7777
+    command: ["streamlit", "run", "streamlit_app.py", "--server.port=7777", "--server.address=0.0.0.0"]
+     
