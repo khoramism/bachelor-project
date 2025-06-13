@@ -1,6 +1,7 @@
 import streamlit as st
 from sentence_transformers import SentenceTransformer
-import lancedb
+from qdrant_client import QdrantClient
+import os
 import numpy as np
 import pandas as pd
 
@@ -80,18 +81,27 @@ model = load_model()
 
 @st.cache_resource
 def init_db():
-    return lancedb.connect("lancedb_dir")
+    return QdrantClient(host=os.getenv("QDRANT_HOST", "localhost"), port=int(os.getenv("QDRANT_PORT", 6333)))
 
 db = init_db()
 
 def search_verses(embedding: np.ndarray, top_k=3):
     try:
-        table = db.open_table("ghazals")
-        # Include 'score' in the select so we can display the relevancy
-        results = table.search(embedding.tolist()) \
-                     .select(["verse_text", "ghazal_id", "_distance"]) \
-                     .limit(top_k) \
-                     .to_pandas()
+        hits = db.query_points(
+            collection_name="ghazals",
+            query=embedding.tolist(),
+            limit=top_k,
+        )
+        results = pd.DataFrame(
+            [
+                {
+                    "verse_text": h.payload.get("verse_text"),
+                    "ghazal_id": h.payload.get("ghazal_id"),
+                    "_distance": h.score,
+                }
+                for h in hits
+            ]
+        )
         return results
     except Exception as e:
         st.error(f"خطای پایگاه داده: {str(e)}")
@@ -146,3 +156,4 @@ st.sidebar.markdown("""
     </p>
 </div>
 """, unsafe_allow_html=True)
+
