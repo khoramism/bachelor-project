@@ -43,7 +43,7 @@ jsonpointer==3.0.0
 jsonschema==4.23.0
 jsonschema-specifications==2024.10.1
 kubernetes==32.0.1
-lancedb==0.21.1
+qdrant-client==1.14.2
 langchain-chroma==0.2.2
 langchain-core==0.3.48
 langsmith==0.3.18

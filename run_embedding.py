@@ -1,8 +1,8 @@
 import re
 from sentence_transformers import SentenceTransformer
-import lancedb
-import pyarrow as pa
-import pandas as pd
+from qdrant_client import QdrantClient
+from qdrant_client.models import PointStruct, VectorParams, Distance
+import os
 
 with open("./hafez.txt", 'r', encoding='utf8') as file:
     text = file.read()
@@ -42,32 +42,29 @@ model = SentenceTransformer('heydariAI/persian-embeddings')
 beyt_texts = [v["verse_text"] for v in verse_data]
 embeddings = model.encode(beyt_texts)
 
-# Connect to LanceDB
-db = lancedb.connect("lancedb_dir")
-db.drop_all_tables()
+# Connect to Qdrant
+client = QdrantClient(host=os.getenv("QDRANT_HOST", "localhost"), port=int(os.getenv("QDRANT_PORT", 6333)))
 
-# Create schema 
-schema = pa.schema([
-    pa.field("verse_id", pa.string()),
-    pa.field("verse_text", pa.string()),
-    pa.field("ghazal_id", pa.string()),
-    pa.field("full_ghazal", pa.string()),
-    pa.field("embedding", pa.list_(pa.float32(), list_size=embeddings.shape[1]))
-])
+# Recreate collection
+client.recreate_collection(
+    collection_name="ghazals",
+    vectors_config=VectorParams(size=embeddings.shape[1], distance=Distance.COSINE),
+)
 
-# Create table
-table = db.create_table("ghazals", schema=schema)
-
-# Prepare data for insertion
-data = []
+# Prepare points
+points = []
 for verse, emb in zip(verse_data, embeddings):
-    data.append({
-        "verse_id": verse["verse_id"],
-        "verse_text": verse["verse_text"],
-        "ghazal_id": verse["ghazal_id"],
-        "full_ghazal": verse["full_ghazal"],
-        "embedding": emb.tolist()
-    })
+    points.append(
+        PointStruct(
+            id=verse["verse_id"],
+            vector=emb.tolist(),
+            payload={
+                "verse_text": verse["verse_text"],
+                "ghazal_id": verse["ghazal_id"],
+                "full_ghazal": verse["full_ghazal"],
+            },
+        )
+    )
 
-# Insert data
-table.add(data)
+# Upload points
+client.upsert(collection_name="ghazals", points=points)
