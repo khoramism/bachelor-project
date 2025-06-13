@@ -1,5 +1,4 @@
-# Use official Python 3.12 image
-FROM python:3.12-slim
+FROM docker.arvancloud.ir/python:3.12-slim
 
 # Set working directory
 WORKDIR /app
@@ -20,7 +19,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 # Run embedding generation during build
-RUN python run_embedding.py
+# RUN python run_embedding.py
 
 # Expose the Streamlit port
 EXPOSE 7777
