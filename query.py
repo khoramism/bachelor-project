@@ -1,21 +1,31 @@
-import lancedb
+import os
 import numpy as np
+from qdrant_client import QdrantClient
 
-def search(embedding: list):
-    # Connect to LanceDB directory
-    db = lancedb.connect("lancedb_dir")
+def search(embedding: list, limit: int = 3):
+    """Query the Qdrant collection for closest verses."""
+    client = QdrantClient(
+        host=os.getenv("QDRANT_HOST", "localhost"),
+        port=int(os.getenv("QDRANT_PORT", 6333)),
+    )
 
-    # Open the existing table
-    table_name = "ghazals"
-    table = db.open_table(name=table_name)
-
-    # Ensure the embedding is a Python list, not a NumPy array
     if isinstance(embedding, np.ndarray):
         embedding = embedding.tolist()
-    print(table.count_rows())
-    # Perform vector-based search       
-    results = table.search(embedding, vector_column_name="embedding") \
-                   .select(["verse_text", "ghazal_id"]) \
-                   .to_pandas()
+
+    hits = client.query_points(
+        collection_name="ghazals",
+        query=embedding,
+        limit=limit,
+    )
+
+    results = [
+        {
+            "verse_text": hit.payload.get("verse_text"),
+            "ghazal_id": hit.payload.get("ghazal_id"),
+            "score": hit.score,
+        }
+        for hit in hits
+    ]
 
     return results
+

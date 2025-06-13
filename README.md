@@ -1,12 +1,12 @@
 ## 📖 Intelligent Hafez Verse Search
 
-A Streamlit-based web application enabling semantic search over the complete divan of Hafez using state-of-the-art Persian sentence embeddings and vector search with LanceDB.
+A Streamlit-based web application enabling semantic search over the complete divan of Hafez using state-of-the-art Persian sentence embeddings and vector search with Qdrant.
 
 ---
 
 ### 🚀 Project Overview
 
-This project provides an intelligent search interface for Hafez’s ghazals (poems). It ingests the full text of *دیوان حافظ* (divan of Hafez), splits it into couplets (بیت), computes embeddings via the `heydariAI/persian-embeddings` SentenceTransformer model, and stores the data in a LanceDB vector database for fast, approximate nearest neighbor search. Users can enter any Persian query to retrieve the most semantically relevant verses.
+This project provides an intelligent search interface for Hafez’s ghazals (poems). It ingests the full text of *دیوان حافظ* (divan of Hafez), splits it into couplets (بیت), computes embeddings via the `heydariAI/persian-embeddings` SentenceTransformer model, and stores the data in a Qdrant vector database for fast, approximate nearest neighbor search. Users can enter any Persian query to retrieve the most semantically relevant verses.
 
 ### ✨ Key Features
 
@@ -29,8 +29,7 @@ This project provides an intelligent search interface for Hafez’s ghazals (poe
 ├── embed_query_tester.py      # (Optional) Embedding & query testing script
 ├── query.py                   # Programmatic search interface
 ├── streamlit_app.py           # Streamlit web application
-└── lancedb_dir/               # LanceDB storage directory
-    └── ghazals.lance          # Main vector table with embeddings
+└── docker-compose.yml         # Includes Qdrant service for vector storage
 ```
 
 ### 🛠️ Prerequisites
@@ -68,7 +67,7 @@ This project provides an intelligent search interface for Hafez’s ghazals (poe
    python run_embedding.py
    ```
 
-   This script reads `hafez.txt`, parses ghazals and verses, computes embeddings, and populates the LanceDB table.
+   This script reads `hafez.txt`, parses ghazals and verses, computes embeddings, and uploads them to the Qdrant collection.
 
 ### ▶️ Running the Application Locally
 

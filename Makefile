@@ -15,8 +15,8 @@ help:
 	@echo "  build   Build the Docker image ($(docker_image))"
 	@echo "  embed         Regenerate embeddings locally using run_embedding.py"
 	@echo "  up    Build and start services with Docker Compose"
-	@echo "  down  Stop and remove services with Docker Compose"
-	@echo "  clean         Remove local LanceDB directory"
+@echo "  down  Stop and remove services with Docker Compose"
+@echo "  clean         Remove old LanceDB directory"
 
 #################################
 build:
