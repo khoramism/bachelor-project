@@ -91,7 +91,7 @@ def search_verses(embedding: np.ndarray, top_k=3):
             collection_name="ghazals",
             query=embedding.tolist(),
             limit=top_k,
-        )
+        ).points
         results = pd.DataFrame(
             [
                 {

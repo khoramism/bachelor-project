@@ -3,7 +3,7 @@ FROM bachelor-project-hafez-search:latest
 RUN pip install qdrant-client==1.14.2
 
 # Run embedding generation during build
-RUN python run_embedding.py
+# RUN python run_embedding.py
 
 # Expose the Streamlit port
 EXPOSE 7777
