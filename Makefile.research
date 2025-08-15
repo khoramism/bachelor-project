@@ -1,0 +1,5 @@
+.PHONY: eval ann-sweep
+eval:
+	python eval/eval.py --queries data/gold/queries.jsonl --judgments data/gold/judgments.jsonl --corpus hafez.tsv || true
+ann-sweep:
+	python scripts/ann_sweep.py --efs 50 150 400 || true

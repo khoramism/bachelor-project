@@ -1,0 +1,7 @@
+rank-bm25
+sentence-transformers
+qdrant-client
+numpy
+scipy
+pandas
+tqdm

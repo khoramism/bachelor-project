@@ -132,3 +132,8 @@ print(results)
 for the non technical document, take a look at this:
 
 https://docs.google.com/document/d/1kPBD21pEvcRnMVVYnimJUtyz1Lpe7ykyGnAyOn7jg5w/edit?usp=sharing 
+### Research quickstart
+- Run `pip install -r requirements.txt && pip install -r requirements.research.txt`
+- Add queries/judgments in `data/gold/`
+- Run `make -f Makefile.research eval`
+- See `RESULTS.md` and `paper/mini-study.md`
